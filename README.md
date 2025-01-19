@@ -6,20 +6,16 @@
 
 - [Overview](#overview)
 - [Template](#template)
-- [Infrastructure Deployment](#infrastructure-deployment)
-  - [What `deploy-infra.ps1` Does](#what-deploy-infraps1-does)
-  - [Steps to Deploy Infrastructure](#steps-to-deploy-infrastructure)
 - [Environment File (.env)](#environment-file-env)
 - [Project Structure](#project-structure)
 - [Running the App Locally](#running-the-app-locally)
-- [Deployment to Azure](#deployment-to-azure)
-- [Best Practices](#best-practices)
-- [Troubleshooting](#troubleshooting)
 - [License](#license)
 
 ## Overview
 
-**Streamlit Starter App on Azure** is a lightweight template for deploying secure, multi-page Streamlit applications on Azure. Designed for proofs-of-concept, prototypes, and internal tools, this template simplifies the deployment process while following best practices for scalability.
+**Streamlit Starter App on Azure** is a lightweight template for deploying secure, multi-page Streamlit applications on Azure. It is designed for **quick proofs-of-concept (POCs)**, **prototypes**, and **internal tools**, making it easy to deploy demo applications or AI-powered solutions. 
+
+This template is **not enterprise-ready** but provides a solid foundation for small-scale projects or internal use cases.
 
 Key features include:
 
@@ -27,7 +23,7 @@ Key features include:
 - **Infrastructure deployment** using a single PowerShell script.
 - **Async support** for integrating frameworks like **AutoGen** and **Semantic Kernel**, enabling advanced workflows and AI-driven applications.
 
-The app is deployed as an Azure Container App, making it easy to scale and manage. This template is ideal for individual developers or small teams building internal tools, demo applications, or AI-powered solutions.
+The app is deployed as a containerized Web App, making it easy to scale and manage.
 
 ## Template
 
@@ -38,22 +34,19 @@ This project provides a starter template for deploying a Streamlit app on Azure.
 
 The template is designed to simplify the process of deploying Streamlit apps to Azure while following best practices for scalability and maintainability.
 
-## Infrastructure Deployment
+## Environment File (.env)
 
-The infrastructure for this project is deployed using a **PowerShell script** located in the `azure/` folder. This script automates the creation of all necessary Azure resources for the app, ensuring a smooth and repeatable deployment process.
+The `.env` file is used to store sensitive configuration values required by the application. It must exist in the root directory **before running the deployment scripts**, as the deployment process will modify specific values in the file.
 
-### What `deploy-infra.ps1` Does
+**Important Notes:**
 
-The `deploy-infra.ps1` script performs the following tasks in order:
+- The `deploy-infra.ps1` script will overwrite your `APP_CLIENT_ID`, `APP_CLIENT_SECRET`, and `APP_TENANT_ID` values during deployment. Ensure the `.env` file exists in the root directory before running the script.
+- Do not share or commit the `.env` file to version control systems to avoid exposing sensitive information.
+- See `template.env` for an example of the minimum required values.
 
-1. **Resource Group Creation**: Creates a resource group in the specified Azure region.
-2. **Azure Container Registry (ACR)**: Sets up a container registry for storing and managing container images.
-3. **App Service Plan and App Service**: Deploys a Linux-based App Service Plan and an App Service for hosting the containerized Streamlit app.
-4. **App Registration**: Registers the app in Azure Active Directory (AAD) for secure authentication and generates a client secret.
-5. **Update Redirect URIs**: Updates the redirect URIs for the app registration.
-6. **Environment File Updates**: Updates the `.env` file with the app's client ID, client secret, and tenant ID.
+## Deploy to Azure
 
-The script is idempotent, meaning it can be safely re-run without duplicating resources or causing errors. Developers can modify the script to add more resources or customize the deployment process as needed.
+This project uses two PowerShell scripts to deploy the infrastructure and the app to Azure. **Deploying to Azure is required to update the `.env` file with the necessary Entra ID settings, even for running the app locally.** The app validates security using Entra ID, so skipping this step is not recommended.
 
 ### Steps to Deploy Infrastructure
 
@@ -72,6 +65,7 @@ The script is idempotent, meaning it can be safely re-run without duplicating re
    - Prompt you to log in to Azure.
    - Generate unique names for all resources based on the app acronym and Azure region.
    - Create and configure all required Azure resources.
+   - Update the `.env` file with the `APP_CLIENT_ID`, `APP_CLIENT_SECRET`, and `APP_TENANT_ID` values.
 
 3. **Verify Deployment**:
    You can verify the deployment by checking the Azure portal or using the Azure CLI:
@@ -80,14 +74,16 @@ The script is idempotent, meaning it can be safely re-run without duplicating re
    az resource list --resource-group <resourceGroupName>
    ```
 
-## Environment File (.env)
+### Steps to Deploy the App
 
-The `.env` file is used to store sensitive configuration values required by the application. These values are automatically updated by the `deploy-infra.ps1` script during the deployment process. See `template.env` for an example of the minimum required values.
+1. Ensure the infrastructure is deployed and the `.env` file is updated with the required values.
+2. Run the deployment script:
 
-**Important Notes:**
+   ```powershell
+   .\azure\deploy-app.ps1
+   ```
 
-- The `deploy-infra.ps1` script will overwrite your `APP_CLIENT_ID`, `APP_CLIENT_SECRET`, and `APP_TENANT_ID` values during deployment. Ensure the `.env` file exists in the root directory before running the script.
-- Do not share or commit the `.env` file to version control systems to avoid exposing sensitive information.
+3. Verify the deployment in the Azure portal. The app should now be accessible via the URL provided by the Azure App Service.
 
 ## Project Structure
 
@@ -113,19 +109,22 @@ root/
 
 ## Running the App Locally
 
-*To be completed.*
+To run the app locally:
 
-## Deployment to Azure
+1. **Deploy to Azure First**: Ensure the infrastructure is deployed and the `.env` file is generated with the required Entra ID settings.
+2. Install Python and dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-*To be completed.*
+3. Set up the `.env` file with the required values (generated during Azure deployment).
 
-## Best Practices
+4. Run the app:
+   ```bash
+   streamlit run app/main.py
+   ```
 
-*To be completed.*
-
-## Troubleshooting
-
-*To be completed.*
+5. Open the app in your browser at `http://localhost:8501`.
 
 ## License
 
