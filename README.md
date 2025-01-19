@@ -13,7 +13,8 @@
 
 ## Overview
 
-**Streamlit Starter App on Azure** is a lightweight template for deploying secure, multi-page Streamlit applications on Azure. It is designed for **quick proofs-of-concept**, **prototypes**, and **internal tools**. The template is not enterprise-ready, but it provides a strong starting point for small-scale projects or demos.
+**Streamlit Starter App on Azure** is a lightweight template for deploying **quick proofs-of-concept** and **demonstrations**. This template is not enterprise-ready and should not be used as a starting point for production applications. It is intended for demo applications running on Azure, secured with Entra ID, to restrict access to internal users or users from specific tenants. Deploy this in **non-production tenants only**.
+
 
 Key features:
 - **Secure authentication** with Entra ID (Azure AD).
