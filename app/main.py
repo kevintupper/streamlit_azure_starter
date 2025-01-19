@@ -7,8 +7,8 @@ It handles the main application flow, including authentication, navigation setup
 The module performs the following key functions:
 1. Configures the Streamlit page settings.
 2. Manages the authentication flow.
-3. Builds the application menu.
-4. Executes the selected menu item based on its meta file definition.
+3. Builds the sidebar navigation.
+4. Loads the selected page based on the selected menu item.
 
 Usage:
     Run this file directly with Streamlit to start the application.
@@ -37,6 +37,8 @@ import streamlit as st
 
 # Core imports
 from app.core.config import config
+from app.core.session_manager import SessionManager
+from app.core.auth import enforce_auth_or_display_sign_in
 
 
 
@@ -80,14 +82,34 @@ async def main():
     # Configure Streamlit (this must be the first Streamlit command)
     configure_streamlit()
 
+
+    # Enforce user authentication or keep on the sign-in screen until they are authenticated.
+    if enforce_auth_or_display_sign_in():
+
+        # Build the navigation menu
+        st.sidebar.markdown("## Navigation")
+
+        # We are authenticated, so we can show the configuration manager
+        st.markdown("## Configuration Manager")
+
+        # Write the session state to the screen
+        st.json(st.session_state)
+
+
+        # Check if we should show the configuration manager
+#        if st.session_state.get('show_configuration_manager', False):
+#            from app.core import configuration_manager
+#            configuration_manager.configuration_manager_page()
+#        else:
+            # Execute the selected menu item based on its meta file definition
+#            run_presentation()
+
+
     # Show the App Name
-    st.markdown(f"# {config.APP_NAME}")
-    st.markdown(f"## {config.MSAL_REDIRECT_URI}")
+#    st.markdown(f"# {config.APP_NAME}")
+#    st.markdown(f"## {config.MSAL_REDIRECT_URI}")
 
 
-    #Sidebar
-    st.sidebar.title("Sidebar")
-    st.sidebar.write("This is the sidebar")
 
 
 # -----------------------------------------------------------------------------------------------------------
