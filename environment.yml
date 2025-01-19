@@ -1,0 +1,9 @@
+# Name must match the unique app name in the .env file.
+name: streamlit-starter-kt
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+    - -r requirements.txt

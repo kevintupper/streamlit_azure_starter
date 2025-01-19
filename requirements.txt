@@ -1,0 +1,12 @@
+# Utility Packages
+requests
+python-dotenv
+asyncio
+
+# Auth and Security Packages
+msal
+jwt
+
+# Streamlit Packages
+streamlit
+
